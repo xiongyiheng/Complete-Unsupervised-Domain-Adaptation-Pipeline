@@ -5,7 +5,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from .classifier import classifier
+from classifier import classifier
 
 
 class GradientReverseFunction(torch.autograd.Function):
