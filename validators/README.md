@@ -5,9 +5,7 @@ Our benchmark implements a diverse set of validators for UDA model selection, sp
 | Category | Validators |
 | :--- | :--- |
 | **Source-Guided** | Source Accuracy (validation set) (`src_acc.py`), IWCV (`iwcv.py`), DEV (`dev.py`) |
-| **Target Certainty** | Entropy (`entropy.py`) |
-| **Target Certainty + Diversity** | InfoMax (`infomax.py`), Corr-C (`corrc.py`), BNM(V) (`bnm_v.py`), MCC(V) (`mcc_v.py`) |
-| **Target Neighbor Structure** | SND (`snd.py`) |
+| **Target-Based** | Entropy (`entropy.py`), InfoMax (`infomax.py`), Corr-C (`corrc.py`), BNM(V) (`bnm_v.py`), MCC(V) (`mcc_v.py`), SND (`snd.py`), ClassAMI (`classami.py`), MixVal (`mixval.py`), TransferScore (`transferscore.py`) |
 
 **Note:** An `Oracle` (`tgt_oracle.py`) validator (using target labels to select) is also included to serve as an upper-bound target performance.
 
