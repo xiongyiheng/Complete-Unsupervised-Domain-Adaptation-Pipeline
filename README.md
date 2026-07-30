@@ -25,3 +25,7 @@ A complete pipeline for **unsupervised domain adaptation (UDA)** on medical imag
 * **Fundus:** binary classification of Glaucoma vs. Non-Glaucoma.
 
 See each dataset's README for data sources, preprocessing steps, and reproducibility splits.
+
+## Citation
+
+If you find this code helpful, please consider citing and giving our code repository a star ⭐️:
