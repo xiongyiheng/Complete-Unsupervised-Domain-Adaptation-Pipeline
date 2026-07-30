@@ -28,4 +28,4 @@ See each dataset's README for data sources, preprocessing steps, and reproducibi
 
 ## Citation
 
-If you find this code helpful, please consider citing and giving our code repository a star ⭐️:
+If you find this code helpful, please consider giving our code repository a star ⭐️
