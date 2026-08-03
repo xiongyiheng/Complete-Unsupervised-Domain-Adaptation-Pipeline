@@ -38,5 +38,5 @@ If you find this code helpful, please consider citing and giving our code reposi
 }
 ```
 
-# Acknowledgement
+## Acknowledgement
 This study was funded by the German Research Foundation DFG (Project: KEMAI, GRK 3012 – 520750254) and by the German Federal Ministry of Research, Technology and Space BMFTR as part of the University Medicine Network 3.0 (Project: RACOON, 01KX2524).
