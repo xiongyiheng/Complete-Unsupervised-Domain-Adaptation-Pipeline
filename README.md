@@ -28,4 +28,15 @@ See each dataset's README for data sources, preprocessing steps, and reproducibi
 
 ## Citation
 
-If you find this code helpful, please consider giving our code repository a star ⭐️
+If you find this code helpful, please consider citing and giving our code repository a star ⭐️:
+```BibTeX
+@article{xiong2026towards,
+  title={Towards Practical Algorithm Selection for Unsupervised Domain Adaptation in Medical Imaging},
+  author={Xiong, Yiheng and Gall{\'e}e, Luisa and Wolf, Daniel Santak and Hillenhagen, Heiko and G{\"o}tz, Michael},
+  journal={arXiv preprint arXiv:2607.28125},
+  year={2026}
+}
+```
+
+# Acknowledgement
+This study was funded by the German Research Foundation DFG (Project: KEMAI, GRK 3012 – 520750254) and by the German Federal Ministry of Research, Technology and Space BMFTR as part of the University Medicine Network 3.0 (Project: RACOON, 01KX2524).
