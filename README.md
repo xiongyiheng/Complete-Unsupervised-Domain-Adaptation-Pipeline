@@ -26,5 +26,18 @@ A complete pipeline for **unsupervised domain adaptation (UDA)** on medical imag
 
 See each dataset's README for data sources, preprocessing steps, and reproducibility splits.
 
+## Citation
+
+If you find this code helpful, please consider citing and giving our code repository a star ⭐️:
+```BibTeX
+@article{xiong2026how,
+  title={How Far from Clinical Deployment? Evaluating the Complete Unsupervised Domain Adaptation Pipeline in Medical Imaging},
+  author={Xiong, Yiheng and Gall{\'e}e, Luisa and Wolf, Daniel Santak and Hillenhagen, Heiko and G{\"o}tz, Michael},
+  journal={arXiv preprint arXiv:2608.12035},
+  year={2026}
+}
+```
+
 ## Acknowledgement
+
 This study was funded by the German Research Foundation DFG (Project: KEMAI, GRK 3012 – 520750254) and by the German Federal Ministry of Research, Technology and Space BMFTR as part of the University Medicine Network 3.0 (Project: RACOON, 01KX2524).
