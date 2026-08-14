@@ -1,4 +1,8 @@
-# Complete Unsupervised Domain Adaptation (UDA) Pipeline
+# How Far from Clinical Deployment? Evaluating the Complete Unsupervised Domain Adaptation Pipeline in Medical Imaging
+[[`arXiv`](https://arxiv.org/abs/2405.11914)]
+[[`BibTex`](#citation)]
+
+Yiheng Xiong, [Luisa Gallée](https://scholar.google.de/citations?user=RotwTNsAAAAJ&hl=en), [Daniel Santak Wolf](https://viscom.uni-ulm.de/members/daniel-wolf/), [Heiko Hillenhagen](https://www.linkedin.com/in/heiko-hillenhagen/) and [Michael Götz](https://scholar.google.com/citations?user=GSyIRg4AAAAJ&hl=en)
 
 A complete pipeline for **unsupervised domain adaptation (UDA)** on medical imaging tasks, covering both (1) **adaptation** — training UDA algorithms jointly on a labeled source domain (e.g. one hospital) and an unlabeled target domain (e.g. a different one), and (2) **label-free model selection** — since the target domain has no labels, validators are used to select the best checkpoint using only source labels and unlabeled target data.
 
@@ -26,7 +30,7 @@ A complete pipeline for **unsupervised domain adaptation (UDA)** on medical imag
 
 See each dataset's README for data sources, preprocessing steps, and reproducibility splits.
 
-## Citation
+## <a name="citation"></a>Citation
 
 If you find this code helpful, please consider citing and giving our code repository a star ⭐️:
 ```BibTeX
