@@ -1,5 +1,5 @@
 # How Far from Clinical Deployment? Evaluating the Complete Unsupervised Domain Adaptation Pipeline in Medical Imaging
-[[`arXiv`](https://arxiv.org/abs/2405.11914)]
+[[`arXiv`](https://arxiv.org/abs/2608.12035)]
 [[`BibTex`](#citation)]
 
 Yiheng Xiong, [Luisa Gallée](https://scholar.google.de/citations?user=RotwTNsAAAAJ&hl=en), [Daniel Santak Wolf](https://viscom.uni-ulm.de/members/daniel-wolf/), [Heiko Hillenhagen](https://www.linkedin.com/in/heiko-hillenhagen/) and [Michael Götz](https://scholar.google.com/citations?user=GSyIRg4AAAAJ&hl=en)
@@ -34,7 +34,7 @@ See each dataset's README for data sources, preprocessing steps, and reproducibi
 
 If you find this code helpful, please consider citing and giving our code repository a star ⭐️:
 ```BibTeX
-@article{xiong2026how,
+@article{xiong2026far,
   title={How Far from Clinical Deployment? Evaluating the Complete Unsupervised Domain Adaptation Pipeline in Medical Imaging},
   author={Xiong, Yiheng and Gall{\'e}e, Luisa and Wolf, Daniel Santak and Hillenhagen, Heiko and G{\"o}tz, Michael},
   journal={arXiv preprint arXiv:2608.12035},
