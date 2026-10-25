@@ -55,13 +55,12 @@ def main():
 
     print(f'{len(table)} checkpoints, {table.algorithm.nunique()} algorithms, {len(directions)} validators, '
           f'{len(nominations)} nominations')
-    for b in best:
-        print('selected checkpoint:', table.loc[b].drop([c for c in directions if c in table.columns]).to_dict(),
-              f'agreement score {scores[b]:.3f}')
+    print('selected checkpoint:', table.loc[best].drop([c for c in directions if c in table.columns]).to_dict(),
+          f'agreement score {scores[best]:.3f}')
 
     if y is not None:  # synthetic demo: compare with the labels the method never saw
         acc = np.array([balanced_acc(p.argmax(1), y) for p in probs])
-        print(f'target accuracy  selected {acc[best].mean():.3f} | best checkpoint (oracle) {acc.max():.3f}')
+        print(f'target accuracy  selected {acc[best]:.3f} | best checkpoint (oracle) {acc.max():.3f}')
         for v, d in directions.items():
             s = table[v].to_numpy()
             print(f'  single validator {v:12s} picks {acc[np.argmax(s) if d == "max" else np.argmin(s)]:.3f}')

@@ -30,7 +30,7 @@ A complete pipeline for **unsupervised domain adaptation (UDA)** on medical imag
 * **Chest X-Ray:** binary classification of Pneumonia vs. Non-Pneumonia.
 * **Fundus:** binary classification of Glaucoma vs. Non-Glaucoma.
 
-See each dataset's README for data sources, preprocessing steps, and reproducibility splits.
+See each dataset's README for data sources, preprocessing steps, and how the training/test splits are formed.
 
 ## <a name="citation"></a>Citation
 
