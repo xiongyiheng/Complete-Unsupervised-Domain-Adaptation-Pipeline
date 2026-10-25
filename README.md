@@ -36,11 +36,11 @@ See each dataset's README for data sources, preprocessing steps, and how the tra
 
 If you find this code helpful, please consider citing and giving our code repository a star ⭐️:
 ```BibTeX
-@article{xiong2026far,
-  title={How Far from Clinical Deployment? Evaluating the Complete Unsupervised Domain Adaptation Pipeline in Medical Imaging},
-  author={Xiong, Yiheng and Gall{\'e}e, Luisa and Wolf, Daniel Santak and Hillenhagen, Heiko and G{\"o}tz, Michael},
-  journal={arXiv preprint arXiv:2608.12035},
-  year={2026}
+@InProceedings{Xiong_2027_WACV,
+    author    = {Xiong, Yiheng and Gall{\'e}e, Luisa and Wolf, Daniel Santak and Hillenhagen, Heiko and G{\"o}tz, Michael},
+    title     = {How Far from Clinical Deployment? Evaluating the Complete Unsupervised Domain Adaptation Pipeline in Medical Imaging},
+    booktitle = {Proceedings of the IEEE/CVF Winter Conference on Applications of Computer Vision (WACV)},
+    year      = {2027}
 }
 ```
 
