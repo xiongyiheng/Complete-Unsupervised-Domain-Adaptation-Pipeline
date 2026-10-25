@@ -103,3 +103,6 @@ class DALN(nn.Module):
         total_loss = cls_loss + self.transfer_loss_weight * transfer_loss
 
         return total_loss, cls_loss, transfer_loss
+
+    def predict(self, x):
+        return self.classifier(self.backbone(x))

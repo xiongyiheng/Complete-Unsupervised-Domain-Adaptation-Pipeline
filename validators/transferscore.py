@@ -7,77 +7,82 @@ from sklearn.neighbors import NearestNeighbors
 
 from utils import softmax
 
-EPS = 1e-12
 
-def _uniformity(W: np.ndarray) -> float:
-    """Mean squared angular deviation of class weight vectors from the ideal inter-class angle."""
-    Wt = torch.from_numpy(W.astype(np.float32))
+def uniformity(W: np.ndarray) -> float:
+    """Official utils.uniformity: mean squared deviation of the pairwise angles between class weight vectors from
+    the ideal angle arccos(-1/(C-1))."""
+    Wt = torch.as_tensor(np.asarray(W), dtype=torch.float32)
+    if Wt.dim() > 2:
+        Wt = Wt.view(Wt.size(0), -1)
     n = Wt.shape[0]
     W_norm = F.normalize(Wt, p=2, dim=1)
     cosine = torch.matmul(W_norm, W_norm.t())
     cosine_off = cosine.flatten()[:-1].view(n - 1, n + 1)[:, 1:]
-    cosine_off = cosine_off.clamp(-1 + 1e-6, 1 - 1e-6)
-    theta = torch.acos(cosine_off)
-    theta0 = torch.acos(torch.tensor(-1.0 / (n - 1)).clamp(-1 + 1e-6, 1 - 1e-6))
+    theta = torch.acos(cosine_off.clamp(-1.0, 1.0))  # clamp only guards float round-off
+    theta0 = torch.acos(torch.tensor(-1.0 / (n - 1)))
     return float((theta - theta0).pow(2).mean().item())
 
 
-def transferscore(features: np.ndarray, logits: np.ndarray, seed: int = 42) -> float:
-    """
-    TransferScore = H - entropy_loss / log(C) - u
-      H            = Hopkins statistic on features (clustering tendency; higher is better)
-      entropy_loss = mean per-sample entropy - marginal entropy (= -InfoMax)
-      u            = classifier head weight uniformity, with W recovered via
-                     least squares (features @ W.T ≈ logits), since head weights
-                     are not stored in the checkpoint.
-    """
-    features = np.asarray(features, dtype=np.float64)
-    logits = np.asarray(logits, dtype=np.float64)
-    N, C = logits.shape
-    D = features.shape[1]
-
-    rng = np.random.RandomState(seed)
-
-    # Hopkins statistic (5% subsampling, kNN k=2)
+def hopkins(features: np.ndarray, rng: np.random.RandomState) -> float:
+    """Hopkins statistic, 5% sample, k = 2 nearest neighbours (official get_transfer_score)."""
+    X = np.asarray(features, dtype=np.float64)
+    N, D = X.shape
     sample_size = max(1, int(N * 0.05))
-    X_uniform = rng.uniform(features.min(axis=0), features.max(axis=0), (sample_size, D))
-    random_indices = rng.choice(N, size=sample_size, replace=False)
-    X_sample = features[random_indices]
+    X_uniform = rng.uniform(X.min(axis=0), X.max(axis=0), (sample_size, D))
+    X_sample = X[rng.choice(N, size=sample_size, replace=False)]
+    nbrs = NearestNeighbors(n_neighbors=2).fit(X)
+    u_sum = float(np.sum(nbrs.kneighbors(X_uniform, n_neighbors=2)[0][:, 0]))
+    w_sum = float(np.sum(nbrs.kneighbors(X_sample, n_neighbors=2)[0][:, 1]))
+    return u_sum / (u_sum + w_sum)
 
-    nbrs = NearestNeighbors(n_neighbors=2).fit(features)
-    u_distances = nbrs.kneighbors(X_uniform, n_neighbors=2)[0][:, 0]
-    w_distances = nbrs.kneighbors(X_sample, n_neighbors=2)[0][:, 1]
 
-    u_sum = float(np.sum(u_distances))
-    w_sum = float(np.sum(w_distances))
-    H = u_sum / (u_sum + w_sum) if (u_sum + w_sum) > EPS else 0.5
+def im_loss(logits: np.ndarray, batch_size: int, rng: np.random.RandomState) -> float:
+    """Mean over shuffled mini-batches (drop_last) of mean entropy - marginal entropy, as the official loop over
+    the target loader; batch_size <= 0 uses the whole split as one batch."""
+    probs = softmax(np.asarray(logits, dtype=np.float64))
+    N = probs.shape[0]
+    if batch_size <= 0 or batch_size > N:
+        batches = [np.arange(N)]
+    else:
+        perm = rng.permutation(N)
+        batches = [perm[i:i + batch_size] for i in range(0, N - batch_size + 1, batch_size)]
+    vals = []
+    for idx in batches:
+        p = probs[idx]
+        ent = float(np.mean(-(p * np.log(p + 1e-5)).sum(axis=1)))
+        m = p.mean(axis=0)
+        vals.append(ent - float(-(m * np.log(m + 1e-6)).sum()))
+    return float(np.mean(vals))
 
-    # Entropy loss: mean per-sample entropy - marginal entropy (= -InfoMax)
-    probs = softmax(logits)
-    mean_entropy = float(np.mean(-(probs * np.log(probs + 1e-5)).sum(axis=1)))
-    marginal = probs.mean(axis=0)
-    marginal_entropy = float(-(marginal * np.log(marginal + 1e-6)).sum())
-    entropy_loss = mean_entropy - marginal_entropy
 
-    # Classifier head uniformity, with W recovered via least squares
-    features_aug = np.hstack([features, np.ones((N, 1))])
-    theta_lstsq, _, _, _ = np.linalg.lstsq(features_aug, logits, rcond=None)
-    W_hat = theta_lstsq[:D].T
-    u = _uniformity(W_hat)
-
-    return float(H - entropy_loss / math.log(C) - u)
+def transferscore(head_features, logits: np.ndarray, head_weights, seed: int = 42, batch_size: int = 32) -> float:
+    """
+    TransferScore (Yang et al., ICLR 2024; official train.py get_transfer_score):
+        score = H - im_loss / log(C) - u
+      H        Hopkins statistic of the features fed to the final classifier layer (official: bottleneck output f,
+               with predictions = head(f));
+      im_loss  batch-averaged mean entropy - marginal entropy (= -InfoMax);
+      u        uniformity of the final classifier layer's weight matrix (official: classifier.head weight).
+    head_features: (N, D) or (H, N, D) for models with H heads (checkpoint['target_train']['head_features']);
+    head_weights:  list of the H final-layer weight matrices (checkpoint['head_weights']).
+    For several heads, H and u are averaged over the heads. Higher is better.
+    """
+    hf = np.asarray(head_features, dtype=np.float64)
+    hf = hf[None] if hf.ndim == 2 else hf
+    logits = np.asarray(logits, dtype=np.float64)
+    C = logits.shape[1]
+    rng = np.random.RandomState(seed)
+    H = float(np.mean([hopkins(f, rng) for f in hf]))
+    ent = im_loss(logits, batch_size, rng)
+    u = float(np.mean([uniformity(np.asarray(W)) for W in head_weights]))
+    return float(H - ent / math.log(C) - u)
 
 
 # ── Usage ──────────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
     ckpt = torch.load("path/to/checkpoint.pt", map_location="cpu")
 
-    logits = ckpt["target_test"]["logits"]
-    features = ckpt["target_test"]["features"]
-    if isinstance(logits, torch.Tensor):
-        logits = logits.numpy()
-    if isinstance(features, torch.Tensor):
-        features = features.numpy()
-
-    score = transferscore(features, logits)
+    split = ckpt["target_train"]          # the official score uses the (unlabelled) target training data
+    score = transferscore(split["head_features"].numpy(), split["logits"].numpy(),
+                          [W.numpy() for W in ckpt["head_weights"]])
     print(f"TransferScore: {score:.6f}  (higher is better)")

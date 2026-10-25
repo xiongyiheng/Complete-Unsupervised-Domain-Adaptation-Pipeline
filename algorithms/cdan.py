@@ -54,8 +54,8 @@ class WarmStartGradientReverseLayer(nn.Module):
 class RandomizedMultiLinearMap(nn.Module):
     def __init__(self, features_dim: int, num_classes: int, output_dim: int):
         super(RandomizedMultiLinearMap, self).__init__()
-        self.Rf = torch.randn(features_dim, output_dim)
-        self.Rg = torch.randn(num_classes, output_dim)
+        self.register_buffer('Rf', torch.randn(features_dim, output_dim))
+        self.register_buffer('Rg', torch.randn(num_classes, output_dim))
         self.output_dim = output_dim
 
     def forward(self, f: torch.Tensor, g: torch.Tensor) -> torch.Tensor:
@@ -130,7 +130,10 @@ class CDAN(nn.Module):
         d = torch.sigmoid(self.discriminator(h))
 
         batch_size = f.size(0)
-        d_label = (torch.arange(batch_size, device=d.device).unsqueeze(1) % 2).float()
+        d_label = torch.cat([
+            torch.ones(f_s.size(0), 1, device=d.device),
+            torch.zeros(f_t.size(0), 1, device=d.device),
+        ], dim=0)
 
         if self.entropy_conditioning:
             weight = 1.0 + torch.exp(-entropy(g, reduction='none'))
@@ -142,3 +145,6 @@ class CDAN(nn.Module):
         total_loss = cls_loss + (self.transfer_loss_weight * disc_loss)
 
         return total_loss, cls_loss, disc_loss
+
+    def predict(self, x):
+        return self.classifier(self.backbone(x))

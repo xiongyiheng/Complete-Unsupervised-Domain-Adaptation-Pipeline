@@ -24,7 +24,7 @@ def snd(logits: np.ndarray, tau: float = 0.05) -> float:
     np.fill_diagonal(sim, -1e9)
 
     # Convert to soft neighbourhood distribution
-    sim_probs = softmax_np(sim)
+    sim_probs = softmax(sim)
 
     # Per-sample entropy, then mean
     H = -(sim_probs * np.log(sim_probs + 1e-8)).sum(axis=1)
@@ -39,6 +39,6 @@ if __name__ == "__main__":
     if isinstance(logits, torch.Tensor):
         logits = logits.numpy()
     
-    score = snd(logit)
+    score = snd(logits)
     print(f"SND Score: {score:.6f}  (lower is better)")
 
