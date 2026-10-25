@@ -7,8 +7,8 @@ A **label-free criterion for jointly selecting the UDA algorithm and its hyperpa
 
 ## Method
 
-1. **Level 1 — within-algorithm nomination.** For every algorithm $a$ and validator $v$, the validator nominates its best-scoring checkpoint of that algorithm, $\theta_{a,v}$ (checkpoints tied at the best score are nominated together and averaged).
-2. **Level 2 — across-algorithm agreement.** The nominated checkpoints of *all* algorithms are aggregated on every target sample (each nomination weighs one): the class with the highest mean predicted probability is the agreement reference $\tilde{y}^t$.
+1. **Level 1 — within-algorithm nomination.** For every algorithm $a$ and validator $v$, the validator nominates its best-scoring checkpoint of that algorithm, $\theta_{a,v}$.
+2. **Level 2 — across-algorithm agreement.** The nominated checkpoints of *all* algorithms vote on every target sample (one vote per nomination); the majority class is the agreement reference $\tilde{y}^t$.
 3. **Selection.** Every checkpoint of the pool is scored by its class-balanced agreement with $\tilde{y}^t$ (per-class fraction of matching predictions, averaged over classes). The single best checkpoint is deployed; the nominated checkpoints are only used to build the reference.
 
 ## Repository Structure
@@ -43,7 +43,7 @@ A **label-free criterion for jointly selecting the UDA algorithm and its hyperpa
    probs = np.load("target_probs.npy")
    directions = pd.read_csv("directions.csv", index_col=0)["direction"].to_dict()
 
-   best, scores, reference, nominations = select(table, probs, directions)   # best: row(s) of the selected checkpoint
+   best, scores, reference, nominations = select(table, probs, directions)   # best: row of the selected checkpoint
    print(table.loc[best, ["algorithm", "lam", "iteration", "path"]])
    ```
 
