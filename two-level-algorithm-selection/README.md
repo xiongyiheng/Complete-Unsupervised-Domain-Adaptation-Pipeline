@@ -1,5 +1,5 @@
 # Towards Practical Algorithm Selection for Unsupervised Domain Adaptation in Medical Imaging
-MICCAI 2026 Workshop
+MICCAI Workshop on Applications of Medical AI (AMAI), 2026
 
 Yiheng Xiong, [Luisa Gallée](https://scholar.google.de/citations?user=RotwTNsAAAAJ&hl=en), [Daniel Santak Wolf](https://viscom.uni-ulm.de/members/daniel-wolf/), [Heiko Hillenhagen](https://www.linkedin.com/in/heiko-hillenhagen/) and [Michael Götz](https://xrad-ulm.github.io/)
 
@@ -55,11 +55,13 @@ Any validator can be used: add a column with its scores to `scores.csv` and its 
 
 If you find this code helpful, please consider citing:
 ```BibTeX
-@inproceedings{xiong2026towards,
-  title={Towards Practical Algorithm Selection for Unsupervised Domain Adaptation in Medical Imaging},
-  author={Xiong, Yiheng and Gall{\'e}e, Luisa and Wolf, Daniel Santak and Hillenhagen, Heiko and G{\"o}tz, Michael},
-  booktitle={Medical Image Computing and Computer Assisted Intervention (MICCAI) Workshops},
-  year={2026}
+@InProceedings{XioYih_Towards_MICCAISAT2026,
+        author = { Xiong, Yiheng AND Gallée, Luisa AND Wolf, Daniel Santak AND Hillenhagen, Heiko AND Götz, Michael},
+        title = { { Towards Practical Algorithm Selection for Unsupervised Domain Adaptation in Medical Imaging } },
+        booktitle = {Medical Image Computing and Computer Assisted Intervention -- MICCAI 2026 Workshops and Challenges},
+        year = {2026},
+        publisher = {Springer Nature Switzerland},
+        volume = {LNCS 17273}
 }
 ```
 
