@@ -73,7 +73,7 @@ class DANN(nn.Module):
         f_t = self.backbone(x_t)
         
         p_s = self.classifier(f_s)
-        cls_loss = F.cross_entropy(p_s, y_s)
+        cls_loss = F.cross_entropy(p_s, y_s, weight=ce_weight)
 
         f = torch.cat([f_s, f_t], dim=0)
         reversed_f = self.grl(f)
@@ -84,8 +84,11 @@ class DANN(nn.Module):
             torch.ones(f_t.size(0), dtype=torch.long)
         ], dim=0).to(f_s.device)
         
-        disc_loss = F.cross_entropy(disc_out, domain_labels, ce_weight)
+        disc_loss = F.cross_entropy(disc_out, domain_labels)
         
         total_loss = cls_loss + (self.transfer_loss_weight * disc_loss)
         
         return total_loss, cls_loss, disc_loss
+
+    def predict(self, x):
+        return self.classifier(self.backbone(x))

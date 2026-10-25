@@ -33,7 +33,8 @@ def get_weight(source_feature: np.ndarray, target_feature: np.ndarray, validatio
 
     P = clf.predict_proba(validation_feature)
     ratio = (P[:, 1:2] + 1e-8) / (P[:, 0:1] + 1e-8)
-    w = (1.0 / ratio) * (N_t / max(N_s, 1))
+    # density ratio p_t(x)/p_s(x) = P(t|x)/P(s|x) * N_s/N_t (original DEV: domain_out[:, :1] / domain_out[:, 1:] * N_s / N_t)
+    w = (1.0 / ratio) * (N_s / max(N_t, 1))
     return w
 
 def get_dev_risk(weight: np.ndarray, error: np.ndarray) -> float:

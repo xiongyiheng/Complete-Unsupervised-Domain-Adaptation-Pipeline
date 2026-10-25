@@ -15,15 +15,18 @@ class SourceOnly(nn.Module):
  
     def forward(self, x_s, x_t):
         f_s = self.backbone(x_s)
-        f_t = self.backgone(x_t)
+        f_t = self.backbone(x_t)
         p_s = self.classifier(f_s)
         p_t = self.classifier(f_t)
         return p_s, p_t
  
     def compute_loss(self, x_s, y_s, x_t, ce_weight):
-        f_s = self.feature_extractor(x_s)
+        f_s = self.backbone(x_s)
         p_s = self.classifier(f_s)
-        cls_loss = F.cross_entropy(p_s, y_s, ce_weight)
- 
+        cls_loss = F.cross_entropy(p_s, y_s, weight=ce_weight)
+
         total_loss = cls_loss
-        return total_loss
+        return total_loss, cls_loss, torch.tensor(0.0, device=x_s.device)
+
+    def predict(self, x):
+        return self.classifier(self.backbone(x))

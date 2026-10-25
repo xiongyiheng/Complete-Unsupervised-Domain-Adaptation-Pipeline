@@ -127,3 +127,7 @@ class MCD(nn.Module):
             'total_loss':   step2_loss.item(),
         }
 
+    def predict(self, x):
+        f = self.backbone(x)
+        return 0.5 * (self.classifier1(f) + self.classifier2(f))
+

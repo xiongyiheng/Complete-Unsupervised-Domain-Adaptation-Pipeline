@@ -33,7 +33,7 @@ def mcc(logits: np.ndarray, temperature: float = 2.5) -> float:
 if __name__ == "__main__":
     ckpt = torch.load("path/to/checkpoint.pt", map_location="cpu")
     
-   logits = ckpt["target_test"]["logits"]
+    logits = ckpt["target_test"]["logits"]
     if isinstance(logits, torch.Tensor):
         logits = logits.numpy()
     

@@ -14,13 +14,15 @@ A complete pipeline for **unsupervised domain adaptation (UDA)** on medical imag
 | [`backbones/`](backbones/README.md) | Feature extractor backbones — 2D CNNs/ViTs/MLPs (via `timm`) for X-ray, and 3D ResNet for volumetric MRI/CT. |
 | [`validators/`](validators/README.md) | Model-selection metrics for picking the best checkpoint without target labels (source accuracy, IWCV, DEV, entropy, InfoMax, SND, etc.), plus an `Oracle` upper-bound validator. |
 | [`datasets/`](datasets) | Data acquisition, preprocessing, and cross-validation split instructions for each imaging modality: [`brain_mri/`](datasets/brain_mri/README.md) (ADNI, AIBL), [`cxr/`](datasets/cxr/README.md) (RSNA, Child-Xray, LDD, CRD), and [`fundus/`](datasets/fundus/README.md) (FairDomain: SLO, OCT). |
-| `utils/` | Shared helper functions used across the pipeline. |
+| `utils/` | Shared helper functions used across the pipeline, including checkpoint saving with model weights (`checkpoint.py`). |
+| [`two-level-algorithm-selection/`](two-level-algorithm-selection/README.md) | Two-level agreement selection (MICCAI 2026 Workshop): label-free joint selection of the UDA algorithm and its hyperparameters from a pool of checkpoints. |
 
 ## How It Fits Together
 
 1. **Train** — pick a backbone from `backbones/` and an algorithm from `algorithms/` to adapt a model from a labeled source dataset to an unlabeled target dataset.
-2. **Checkpoint** — save model outputs (features, logits, ground truth) for the source/target train/test splits, following the `.pt` structure documented in [`validators/README.md`](validators/README.md).
+2. **Checkpoint** — save the model weights and its outputs (features, logits, ground truth) for the source/target train/test splits with `utils/checkpoint.py`, following the `.pt` structure documented in [`validators/README.md`](validators/README.md).
 3. **Validate** — since target labels aren't available for real model selection, use a validator from `validators/` to score and pick the best checkpoint across training runs/hyperparameters.
+4. **Select across algorithms** — combine the validators with the two-level agreement criterion in [`two-level-algorithm-selection/`](two-level-algorithm-selection/README.md) to select one checkpoint across several UDA algorithms and hyperparameter configurations.
 
 ## Task Definitions
 

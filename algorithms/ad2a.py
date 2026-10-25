@@ -5,7 +5,16 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from classifier import classifier
+from .classifier import classifier
+
+
+# lambda -> [adversarial weight, attention-alignment weight], as used in our experiments
+_TLW_PRESETS = {
+    1.0: [0.25860292824577535, 0.14412068248682086],
+    0.5: [0.26309252419732565, 0.5976914213043097],
+    0.1: [0.4255562135568616, 0.8424428872404954],
+}
+_TLW_DEFAULT = _TLW_PRESETS[0.1]
 
 
 class GradientReverseFunction(torch.autograd.Function):
@@ -57,7 +66,7 @@ class AD2A(nn.Module):
         num_classes: int,
         is_nonlinear: bool,
         dropout: float,
-        transfer_loss_weight: list,
+        transfer_loss_weight: float,
         warmup_steps: int = 3000,
         grl_max_iters: int = 1425,
     ):
@@ -72,7 +81,7 @@ class AD2A(nn.Module):
 
         self.register_buffer('update_count', torch.tensor(0))
         self.warmup_steps = warmup_steps
-        self.tlw = _TLW_PRESETS.get(transfer_loss_weight, _TLW_DEFAULT)
+        self.tlw = _TLW_PRESETS.get(float(transfer_loss_weight), _TLW_DEFAULT)
 
     def forward(self, x_s: torch.Tensor, x_t: torch.Tensor):
         p_s = self.cls_head(self.backbone(x_s))
@@ -117,4 +126,7 @@ class AD2A(nn.Module):
         total_loss = cls_loss + transfer_loss
 
         return total_loss, cls_loss, transfer_loss
+
+    def predict(self, x):
+        return self.cls_head(self.backbone(x))
 
